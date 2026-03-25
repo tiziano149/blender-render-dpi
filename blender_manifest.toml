@@ -18,6 +18,7 @@ website = "https://github.com/whoisryosuke/blender-render-dpi"
 tags = ["Render"]
 
 blender_version_min = "5.1.0"
+python_min = "3.13.0"
 # # Optional: Blender version that the extension does not support, earlier versions are supported.
 # # This can be omitted and defined later on the extensions platform if an issue is found.
 # blender_version_max = "5.1.0"
@@ -38,11 +39,11 @@ license = [
 
 # # Optional: bundle 3rd party Python modules.
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/python_wheels.html
-# wheels = [
-#   "./wheels/pillow-10.4.0-cp311-cp311-macosx_11_0_arm64.whl",
-#   "./wheels/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl",
-#   "./wheels/pillow-10.4.0-cp311-cp311-win_amd64.whl",
-# ]
+wheels = [
+  "./wheels/pillow-10.4.0-cp313-cp313-macosx_11_0_arm64.whl",
+  "./wheels/pillow-10.4.0-cp313-cp313-manylinux_2_28_x86_64.whl",
+  "./wheels/pillow-10.4.0-cp313-cp313-win_amd64.whl",
+]
 
 # # Optional: add-ons can list which resources they will require:
 # # * files (for access of any filesystem operations)
