@@ -2,8 +2,8 @@ bl_info = {
     "name": "Render DPI",
     "description": "Helps you convert inches and DPI dimensions to Blender's pixel size.",
     "author": "whoisryosuke",
-    "version": (0, 0, 2),
-    "blender": (2, 80, 0), # not sure if this is right
+    "version": (0, 0, 3),
+    "blender": (5, 1, 0),
     "location": "Properties > Output",
     "warning": "", # used for warning icon and text in addons panel
     "wiki_url": "https://github.com/whoisryosuke/blender-render-dpi",
@@ -32,14 +32,12 @@ from bpy.path import basename
 #    Utility Functions
 # ------------------------------------------------------------------------
 
+# DPI conversion formula (cm to pixels)
+# px = cm * (dpi / 2.54)
 # 1 inch = 2.54 cm
-def convert_inch_to_cm(inches: float) -> float:
-    return inches * 2.54
 
-# DPI calculation is cm = widthPixels * (2.54 / dpi)
-# But this requires knowing size in pixels, so we solve for left side in this function
 def convert_dpi_to_px(centimeters: float, dpi: int) -> float:
-    return centimeters / (2.54 / dpi)
+    return centimeters * (dpi / 2.54)
 
 # ------------------------------------------------------------------------
 #    Scene Properties
@@ -49,18 +47,18 @@ def convert_dpi_to_px(centimeters: float, dpi: int) -> float:
 # UI properties
 class GI_SceneProperties(PropertyGroup):
     width: FloatProperty(
-        name = "Width (in)",
-        description = "Width in inches",
-        default = 8.5,
-        min = 0.01,
-        max = 1000.0
+        name = "Width (cm)",
+        description = "Width in centimeters",
+        default = 21.59,  # 8.5 in equivalent
+        min = 0.1,
+        max = 10000.0
         )
     height: FloatProperty(
-        name = "Height (in)",
-        description = "Height in inches",
-        default = 11.0,
-        min = 0.01,
-        max = 1000.0
+        name = "Height (cm)",
+        description = "Height in centimeters",
+        default = 27.94,  # 11 in equivalent
+        min = 0.1,
+        max = 10000.0
         )
     dpi: IntProperty(
         name = "DPI",
@@ -102,17 +100,16 @@ class DPI_SETTINGS_sync_size(bpy.types.Operator):
         scene = context.scene
         dpi_props = scene.dpi_props
 
-        # Convert Inches to Centimeters (necessary to DPI formula)
-        width_cm = convert_inch_to_cm(dpi_props.width)
-        height_cm = convert_inch_to_cm(dpi_props.height)
+        # Values are now input as centimeters
+        width_cm = dpi_props.width
+        height_cm = dpi_props.height
 
-        # Get DPI value for each side
         dpi = dpi_props.dpi
         width_px = convert_dpi_to_px(width_cm, dpi)
         height_px = convert_dpi_to_px(height_cm, dpi)
 
-        bpy.context.scene.render.resolution_x = round(width_px);
-        bpy.context.scene.render.resolution_y = round(height_px);
+        scene.render.resolution_x = round(width_px)
+        scene.render.resolution_y = round(height_px)
         return {"FINISHED"}
 
 @persistent
@@ -143,10 +140,10 @@ def auto_save_render(scene):
     date_time = now.strftime("%m-%d-%Y-%H-%M-%S")
 
     # We also append the file info for quick ref
-    image_size_info = str(round(width)) + "x" + str(round(height)) + "in-" + str(dpi) + "dpi"
+    image_size_info = f"{round(width)}x{round(height)}cm-{dpi}dpi"
 
     # Merge them all together
-    image_name = image_base_name + "_" + image_size_info + "_" + date_time + "." + extension
+    image_name = f"{image_base_name}_{image_size_info}_{date_time}.{extension}"
     image_final_path = os.path.join(image_dir, image_name)
 
     print("blender_filepath", blender_filepath)
