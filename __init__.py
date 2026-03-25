@@ -1,9 +1,10 @@
 bl_info = {
     "name": "Render DPI",
-    "description": "Helps you convert inches and DPI dimensions to Blender's pixel size.",
+    "description": "Helps you convert cm and DPI dimensions to Blender's pixel size.",
     "author": "whoisryosuke",
     "version": (0, 0, 3),
     "blender": (5, 1, 0),
+    "python": (3, 13, 0),
     "location": "Properties > Output",
     "warning": "", # used for warning icon and text in addons panel
     "wiki_url": "https://github.com/whoisryosuke/blender-render-dpi",
